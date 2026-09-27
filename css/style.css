@@ -61,26 +61,6 @@ p { margin: 0; }
   transform: rotate(-1.5deg) skewX(-12deg);
 }
 
-.sec-sub { color: var(--ink-soft); margin-bottom: 28px; }
-.kicker { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 18px; }
-
-/* buttons */
-.btn {
-  display: inline-block;
-  padding: 12px 20px;
-  font-family: var(--mono);
-  font-weight: 700;
-  text-decoration: none;
-  border: 3px solid var(--ink);
-  border-radius: var(--wobble);
-  transform: rotate(-1deg);
-  transition: transform .12s;
-  box-shadow: 4px 4px 0 var(--ink);
-}
-.btn:hover { transform: rotate(1deg) translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
-.btn--ink { background: var(--ink); color: var(--paper); }
-.btn--pink { background: var(--pink); color: var(--ink); }
-
 /* ---------- masthead ---------- */
 .masthead {
   display: flex;
@@ -102,18 +82,36 @@ p { margin: 0; }
 }
 .wordmark span { color: var(--pink); }
 .nav { display: flex; gap: 18px; align-items: center; font-size: 14px; }
-.nav a:not(.btn) { text-decoration: underline wavy var(--pink); text-underline-offset: 4px; }
-.nav .btn { padding: 8px 14px; font-size: 13px; }
+.nav a { text-decoration: underline wavy var(--pink); text-underline-offset: 4px; }
+.nav a[aria-current="page"] { font-weight: 700; }
 
-/* ---------- 1. wrapper ---------- */
+/* ---------- internal control (top band) ---------- */
+.sec--control {
+  text-align: center;
+  background: var(--ink);
+  color: var(--paper);
+  max-width: none;
+}
+.control-text {
+  font-family: var(--serif);
+  font-size: clamp(26px, 3.6vw, 44px);
+  line-height: 1.25;
+  max-width: 26ch;
+  margin: 0 auto;
+}
+.control-text span { display: block; }
+.control-text span:nth-child(2) { color: var(--yellow); }
+.control-text span:nth-child(3) { font-style: italic; }
+
+/* ---------- the equation ---------- */
 .equation {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 14px 18px;
   font-family: var(--serif);
   font-size: clamp(26px, 4.2vw, 52px);
-  margin-bottom: 40px;
 }
 .eq-box {
   padding: 8px 22px;
@@ -127,32 +125,7 @@ p { margin: 0; }
 .eq-box--money { background: var(--pink); font-family: var(--marker); transform: rotate(-3deg); }
 .eq-op { font-family: var(--marker); font-size: 1.1em; }
 
-.flow {
-  margin: 0;
-  padding: 20px 8px 8px;
-  background: #fff;
-  border: 3px solid var(--ink);
-  border-radius: 6px;
-  box-shadow: 6px 6px 0 var(--ink);
-  position: relative;
-}
-.flow::before {
-  content: "";
-  position: absolute;
-  top: -14px; left: 40px;
-  width: 110px; height: 28px;
-  background: var(--tape);
-  transform: rotate(-4deg);
-}
-.flow svg { width: 100%; height: auto; display: block; }
-.flow-label { font-family: var(--marker); font-size: 30px; fill: var(--ink); }
-.flow-label--sm { font-size: 22px; }
-.flow-note { font-family: var(--mono); font-size: 13px; fill: var(--ink-soft); }
-.flow-sticker { font-family: var(--mono); font-weight: 700; font-size: 14px; fill: var(--ink); }
-.flow-money { font-family: var(--marker); font-size: 44px; fill: var(--pink); }
-figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-style: italic; }
-
-/* ---------- 2. motto ---------- */
+/* ---------- motto ---------- */
 .sec--motto { text-align: center; }
 .motto-small { font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 10px; }
 .motto-big {
@@ -172,13 +145,12 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   mix-blend-mode: multiply;
 }
 
-/* ---------- 3. magazine ---------- */
+/* ---------- magazine ---------- */
 .sec--mag {
   border-top: 3px solid var(--ink);
   border-bottom: 3px solid var(--ink);
 }
 .mag-head { text-align: center; margin-bottom: 40px; }
-.mag-kicker { font-size: 12px; letter-spacing: .25em; text-transform: uppercase; margin-bottom: 12px; }
 .mag-title {
   font-family: var(--serif);
   font-size: clamp(40px, 8vw, 104px);
@@ -187,7 +159,6 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   margin: 0 auto;
 }
 .mag-title em { color: var(--orange); }
-.mag-dek { margin-top: 14px; font-style: italic; font-family: var(--serif); font-size: 22px; color: var(--ink-soft); }
 
 .mag-list {
   list-style: none;
@@ -211,11 +182,11 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   color: var(--pink);
   min-width: 1.6em;
 }
-.mag-list h3 { font-family: var(--serif); font-size: 30px; margin-bottom: 6px; }
-.mag-list p { font-size: 14px; color: var(--ink-soft); }
-.mag-foot { margin-top: 28px; font-size: 12px; text-align: center; font-style: italic; }
+.mag-list h3 { font-family: var(--serif); font-size: 32px; margin-bottom: 6px; }
+.mag-list p { font-size: 15px; color: var(--ink-soft); }
+.mag-list p b { color: var(--ink); }
 
-/* ---------- 4. blog ---------- */
+/* ---------- blog ---------- */
 .post {
   max-width: 720px;
   margin: 0 auto;
@@ -235,30 +206,40 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   transform: rotate(6deg);
 }
 .post-tag { display: inline-block; background: var(--ink); color: var(--paper); padding: 2px 10px; font-size: 12px; letter-spacing: .15em; margin-bottom: 14px; }
-.post-title { font-family: var(--serif); font-size: clamp(30px, 4.5vw, 48px); margin-bottom: 12px; }
-.post-meta { font-size: 13px; color: var(--ink-soft); margin-bottom: 20px; }
+.post-title { font-family: var(--serif); font-size: clamp(30px, 4.5vw, 48px); margin-bottom: 18px; }
 .post-lede { font-family: var(--serif); font-size: 21px; margin-bottom: 20px; }
-.post-steps { padding-left: 0; list-style: none; margin: 0 0 26px; }
+.post-steps { padding-left: 0; list-style: none; margin: 0; }
 .post-steps li { padding: 12px 0; border-top: 1px solid var(--paper-2); }
 .post-steps b { font-family: var(--marker); font-weight: 400; color: var(--blue); }
 
-/* ---------- 5. pricing ---------- */
+/* ---------- pricing ---------- */
 .math-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 18px 36px;
   background: var(--ink);
   color: var(--paper);
   padding: clamp(22px, 4vw, 40px);
   border-radius: 6px;
   transform: rotate(-.8deg);
-  margin-bottom: 40px;
-  overflow-x: auto;
+  margin: 28px 0 56px;
+}
+.credit-lhs {
+  font-family: var(--marker);
+  font-size: clamp(30px, 4.4vw, 62px);
+  line-height: 1;
+  color: var(--yellow);
+  white-space: nowrap;
 }
 .math {
   font-family: var(--serif);
-  font-size: clamp(20px, 2.6vw, 30px);
-  line-height: 2.1;
+  font-size: clamp(20px, 2.4vw, 28px);
+  line-height: 1.9;
+  min-width: 0;
 }
-.math-line { white-space: nowrap; display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
-.m-fn { font-style: italic; }
+.math-line { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; }
+.math-line + .math-line { margin-top: 10px; }
 .m-big { font-size: 1.6em; line-height: 1; }
 .math sub, .math sup { font-size: .55em; }
 .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.15; font-size: .85em; }
@@ -267,9 +248,21 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
 .lim { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; vertical-align: middle; }
 .lim > sup, .lim > sub { vertical-align: baseline; position: static; font-size: .5em; line-height: 1; }
 .lim > sup sub { font-size: .7em; }
-.m-approx { font-family: var(--mono); font-size: .45em; color: #bbb; }
-.math-foot { margin-top: 18px; font-size: 12px; color: #bbb; }
 
+.billing-title {
+  font-family: var(--serif);
+  font-size: clamp(30px, 4.4vw, 52px);
+  margin-bottom: 16px;
+}
+.billing-title::after {
+  content: "";
+  display: inline-block;
+  width: 1.6em; height: 8px;
+  margin-left: 12px;
+  background: var(--blue);
+  transform: rotate(-2deg) skewX(-12deg);
+  vertical-align: middle;
+}
 .graph {
   margin: 0;
   background: #fff;
@@ -279,8 +272,9 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   transform: rotate(.5deg);
 }
 .graph canvas { width: 100%; height: auto; display: block; }
+figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-style: italic; }
 
-/* ---------- 6. stat ---------- */
+/* ---------- stat ---------- */
 .sec--stat {
   text-align: center;
   background: var(--yellow);
@@ -291,7 +285,7 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
 .stat-lead { font-family: var(--serif); font-size: clamp(24px, 3.5vw, 40px); }
 .stat-num {
   font-family: var(--marker);
-  font-size: clamp(34px, 7.5vw, 104px);
+  font-size: clamp(30px, 7vw, 100px);
   line-height: 1.1;
   letter-spacing: -.01em;
   margin: 8px 0;
@@ -301,13 +295,11 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
 .stat-src { margin-top: 18px; font-size: 13px; color: var(--ink-soft); }
 .stat-src::before { content: "* "; }
 
-/* ---------- 7. tagline ---------- */
+/* ---------- tagline ---------- */
 .sec--tagline { text-align: center; }
 .tagline { font-family: var(--serif); font-size: clamp(36px, 6.5vw, 84px); }
-.tagline-sub { font-size: 13px; margin-top: 12px; color: var(--ink-soft); letter-spacing: .05em; }
-.tagline-sub::before, .tagline-sub::after { content: " * "; }
 
-/* ---------- 8. logos ---------- */
+/* ---------- logos ---------- */
 .sec--logos { max-width: none; padding-left: 0; padding-right: 0; }
 .logos-title { text-align: center; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 26px; }
 .marquee {
@@ -342,25 +334,26 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
 .logo--aa { font-family: var(--serif); font-size: 30px; font-variant: small-caps; letter-spacing: .12em; border-bottom: 3px double var(--ink); }
 .logo--lehman { font-family: var(--serif); font-size: 34px; font-style: italic; }
 
-/* ---------- 9. review ---------- */
+/* ---------- review ---------- */
 .review {
   display: grid;
-  grid-template-columns: 180px 1fr;
+  grid-template-columns: 200px 1fr;
   gap: 32px;
   align-items: center;
   margin-top: 20px;
 }
 .review-person { text-align: center; }
 .avatar {
-  width: 140px; height: 140px;
+  width: 150px; height: 150px;
   margin: 0 auto 10px;
   border-radius: 50%;
-  border: 3px dashed var(--ink);
-  display: grid; place-items: center;
-  font-size: 13px;
+  border: 3px solid var(--ink);
+  overflow: hidden;
   background: var(--paper-2);
   transform: rotate(-3deg);
+  box-shadow: 4px 4px 0 var(--pink);
 }
+.avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; display: block; }
 .review-name { font-family: var(--serif); font-size: 26px; }
 .review-role { font-size: 12px; color: var(--ink-soft); }
 .bubble {
@@ -394,7 +387,7 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   transform: translateY(-50%);
 }
 
-/* ---------- 10. accuracy ---------- */
+/* ---------- accuracy ---------- */
 .sec--accuracy { text-align: center; }
 .accuracy-num {
   font-family: var(--mono);
@@ -410,9 +403,9 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   display: block;
 }
 .accuracy-word { font-family: var(--serif); font-size: clamp(48px, 10vw, 140px); line-height: 1; margin-top: 14px; }
-.accuracy-sub { font-family: var(--marker); font-size: 26px; color: var(--pink); transform: rotate(-4deg); display: inline-block; }
+.accuracy-sub { font-family: var(--marker); font-size: 26px; color: var(--blue); transform: rotate(-4deg); display: inline-block; }
 
-/* ---------- 11. how ---------- */
+/* ---------- how ---------- */
 .steps {
   list-style: none;
   padding: 0;
@@ -442,7 +435,7 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
 }
 .step h3 { font-family: var(--serif); font-size: clamp(26px, 3vw, 36px); }
 
-/* ---------- 12. bento ---------- */
+/* ---------- bento ---------- */
 .bento {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -450,19 +443,21 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
 }
 .bento-card {
   position: relative;
+  display: grid;
+  place-items: center;
+  text-align: center;
   background: #fff;
   border: 2px solid var(--ink);
   border-radius: 28px;
-  padding: 44px 30px 38px;
-  min-height: 200px;
+  padding: 44px 30px;
+  min-height: 180px;
   box-shadow: 0 10px 30px rgba(0,0,0,.06);
   transition: transform .15s;
 }
 .bento-card:hover { transform: translateY(-3px) rotate(-.5deg); }
 .bento-card:nth-child(2n) { background: var(--paper-2); }
 .bento-card:nth-child(3n) { background: #fff8d6; }
-.bento-card h3 { font-family: var(--serif); font-size: 32px; margin-bottom: 10px; }
-.bento-card p { color: var(--ink-soft); font-size: 14px; }
+.bento-card h3 { font-family: var(--serif); font-size: 32px; }
 .sparkle {
   position: absolute;
   font-size: 18px;
@@ -479,7 +474,41 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   50% { transform: scale(1.4) rotate(20deg); opacity: 1; }
 }
 
-/* ---------- 13. pullquote ---------- */
+/* ---------- the globe ---------- */
+.globe-grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 480px);
+  align-items: center;
+  gap: 40px;
+}
+.globe-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(44px, 7vw, 96px);
+  letter-spacing: -.02em;
+}
+.globe-box {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 8px 8px 0 var(--blue);
+  padding: 6%;
+  position: relative;
+  transform: rotate(1deg);
+}
+.globe-box::before {
+  content: "";
+  position: absolute;
+  top: -14px; left: 34px;
+  width: 96px; height: 28px;
+  background: var(--tape);
+  transform: rotate(-5deg);
+}
+.globe-box canvas { width: 100%; height: 100%; display: block; cursor: move; touch-action: pan-y; }
+
+/* ---------- pullquote ---------- */
 .sec--quote { text-align: center; }
 .pullquote { margin: 0 auto; max-width: 900px; }
 .pullquote p {
@@ -488,24 +517,52 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   line-height: 1.1;
   letter-spacing: -.01em;
 }
-.pullquote cite { display: block; margin-top: 18px; font-style: normal; font-size: 14px; color: var(--ink-soft); }
-
-/* ---------- 14. control ---------- */
-.sec--control {
-  text-align: center;
-  background: var(--ink);
-  color: var(--paper);
-  max-width: none;
+.pullquote-who {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 26px;
 }
-.control-text {
+.pullquote-who img {
+  width: 76px; height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  border: 3px solid var(--ink);
+  transform: rotate(-4deg);
+  box-shadow: 3px 3px 0 var(--yellow);
+}
+.pullquote cite { font-style: normal; font-size: 14px; color: var(--ink-soft); }
+
+/* ---------- about page ---------- */
+.page-about { min-height: 100vh; display: flex; flex-direction: column; }
+.page-about .masthead, .page-about .footer { width: 100%; flex: none; }
+.about {
+  flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+}
+.about-text {
   font-family: var(--serif);
-  font-size: clamp(24px, 3.4vw, 40px);
-  max-width: 24ch;
-  margin: 0 auto 32px;
+  font-size: clamp(34px, 6.2vw, 108px);
+  line-height: 1.06;
+  letter-spacing: -.015em;
+  text-align: center;
+  max-width: 22ch;
 }
-.sec--control .btn--pink { box-shadow: 4px 4px 0 var(--paper); border-color: var(--paper); }
+.about-text a {
+  color: var(--pink);
+  text-decoration: underline wavy var(--ink);
+  text-underline-offset: .12em;
+  text-decoration-thickness: 2px;
+}
 
-/* ---------- 15. footer ---------- */
+/* ---------- footer ---------- */
 .footer {
   text-align: center;
   padding: 48px 16px 40px;
@@ -513,8 +570,20 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   font-size: 13px;
   color: var(--ink-soft);
 }
-.footer p + p { margin-top: 10px; }
-.footer-made { font-family: var(--marker); font-size: 20px; color: var(--ink); margin-top: 22px !important; transform: rotate(-1deg); display: inline-block; }
+.linkedin {
+  display: inline-grid;
+  place-items: center;
+  width: 52px; height: 52px;
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: var(--wobble);
+  background: #fff;
+  transform: rotate(-3deg);
+  box-shadow: 3px 3px 0 var(--pink);
+  transition: transform .12s;
+}
+.linkedin:hover { transform: rotate(2deg) translate(-1px, -1px); }
+.footer-made { font-family: var(--marker); font-size: 20px; color: var(--ink); margin-top: 22px; transform: rotate(-1deg); display: inline-block; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 760px) {
@@ -524,6 +593,10 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   .bubble::before, .bubble::after { display: none; }
   .equation { font-size: clamp(22px, 7vw, 40px); }
   .math { font-size: 18px; }
+  .math-card { grid-template-columns: 1fr; }
+  .credit-lhs { white-space: normal; }
+  .globe-grid { grid-template-columns: 1fr; }
+  .globe-title { text-align: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {
