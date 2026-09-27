@@ -1,4 +1,6 @@
 # Deploys the static site to GitHub Pages on every push to the repo's default branch.
+# One-time setup (admin only, can't be done from a workflow):
+#   Settings -> Pages -> Build and deployment -> Source: "GitHub Actions"
 name: Deploy to GitHub Pages
 
 on:
@@ -25,8 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
