@@ -63,13 +63,21 @@ p { margin: 0; }
 
 /* ---------- masthead ---------- */
 .masthead {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  background-image: radial-gradient(rgba(0,0,0,.045) 1px, transparent 1px);
+  background-size: 6px 6px;
+  border-bottom: 3px solid var(--ink);
+}
+.masthead-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  padding: 18px 16px;
-  border-bottom: 3px solid var(--ink);
+  padding: 14px 16px;
   max-width: 1100px;
   margin: 0 auto;
 }
@@ -94,10 +102,11 @@ p { margin: 0; }
 }
 .control-text {
   font-family: var(--serif);
-  font-size: clamp(26px, 3.6vw, 44px);
-  line-height: 1.25;
-  max-width: 26ch;
+  font-size: clamp(22px, 3.1vw, 40px);
+  line-height: 1.3;
+  max-width: none;
   margin: 0 auto;
+  padding: 0 16px;
 }
 .control-text span { display: block; }
 .control-text span:nth-child(2) { color: var(--yellow); }
@@ -120,9 +129,9 @@ p { margin: 0; }
   background: #fff;
   transform: rotate(-1.2deg);
 }
-.eq-box small { display: block; font-family: var(--mono); font-size: .32em; letter-spacing: .05em; color: var(--ink-soft); }
+.eq-box small { display: block; text-align: center; font-family: var(--mono); font-weight: 700; font-size: .42em; letter-spacing: .06em; color: var(--ink); margin-top: 2px; }
 .eq-box--os { background: var(--yellow); transform: rotate(1deg); }
-.eq-box--money { background: var(--pink); font-family: var(--marker); transform: rotate(-3deg); }
+.eq-box--money { background: var(--pink); font-family: var(--serif); font-weight: 700; letter-spacing: .06em; transform: rotate(-3deg); }
 .eq-op { font-family: var(--marker); font-size: 1.1em; }
 
 /* ---------- motto ---------- */
@@ -134,15 +143,16 @@ p { margin: 0; }
   font-size: clamp(44px, 9vw, 120px);
   letter-spacing: -.02em;
 }
-.motto-big::after {
+.motto-big .u { position: relative; display: inline-block; }
+.motto-big .u::after {
   content: "";
-  display: block;
-  margin: 10px auto 0;
-  width: 60%;
-  height: 14px;
+  position: absolute;
+  left: -.04em; right: -.04em; bottom: .02em;
+  height: .13em;
   background: var(--pink);
-  transform: rotate(-1deg);
+  transform: rotate(-1.5deg);
   mix-blend-mode: multiply;
+  z-index: -1;
 }
 
 /* ---------- magazine ---------- */
@@ -186,32 +196,6 @@ p { margin: 0; }
 .mag-list p { font-size: 15px; color: var(--ink-soft); }
 .mag-list p b { color: var(--ink); }
 
-/* ---------- blog ---------- */
-.post {
-  max-width: 720px;
-  margin: 0 auto;
-  background: #fff;
-  border: 3px solid var(--ink);
-  padding: clamp(24px, 4vw, 48px);
-  transform: rotate(.6deg);
-  box-shadow: -6px 6px 0 var(--orange);
-  position: relative;
-}
-.post::after {
-  content: "";
-  position: absolute;
-  top: -12px; right: 30px;
-  width: 90px; height: 26px;
-  background: var(--tape);
-  transform: rotate(6deg);
-}
-.post-tag { display: inline-block; background: var(--ink); color: var(--paper); padding: 2px 10px; font-size: 12px; letter-spacing: .15em; margin-bottom: 14px; }
-.post-title { font-family: var(--serif); font-size: clamp(30px, 4.5vw, 48px); margin-bottom: 18px; }
-.post-lede { font-family: var(--serif); font-size: 21px; margin-bottom: 20px; }
-.post-steps { padding-left: 0; list-style: none; margin: 0; }
-.post-steps li { padding: 12px 0; border-top: 1px solid var(--paper-2); }
-.post-steps b { font-family: var(--marker); font-weight: 400; color: var(--blue); }
-
 /* ---------- pricing ---------- */
 .math-card {
   display: grid;
@@ -223,7 +207,7 @@ p { margin: 0; }
   padding: clamp(22px, 4vw, 40px);
   border-radius: 6px;
   transform: rotate(-.8deg);
-  margin: 28px 0 56px;
+  margin: 28px 0 96px;
 }
 .credit-lhs {
   font-family: var(--marker);
@@ -494,8 +478,9 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   border: 3px solid var(--ink);
   border-radius: 6px;
   box-shadow: 8px 8px 0 var(--blue);
-  padding: 6%;
+  padding: 0;
   position: relative;
+  overflow: hidden;
   transform: rotate(1deg);
 }
 .globe-box::before {
@@ -549,14 +534,34 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
 }
 .about-text {
   font-family: var(--serif);
-  font-size: clamp(34px, 6.2vw, 108px);
-  line-height: 1.06;
-  letter-spacing: -.015em;
+  font-size: clamp(26px, 3.4vw, 54px);
+  line-height: 1.28;
+  letter-spacing: -.005em;
   text-align: center;
-  max-width: 22ch;
+  max-width: 30ch;
+  /* a little texture: halftone grain inside the letters */
+  color: transparent;
+  background-color: var(--ink);
+  background-image:
+    radial-gradient(rgba(255,255,255,.28) .9px, transparent 1.1px),
+    radial-gradient(rgba(255,255,255,.14) .8px, transparent 1px);
+  background-size: 4px 4px, 7px 7px;
+  background-position: 0 0, 2px 3px;
+  -webkit-background-clip: text;
+          background-clip: text;
+}
+.about-text mark {
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
+  font-style: italic;
+  background: linear-gradient(transparent 50%, var(--yellow) 50%, var(--yellow) 94%, transparent 94%);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0 .06em;
 }
 .about-text a {
   color: var(--pink);
+  -webkit-text-fill-color: var(--pink);
   text-decoration: underline wavy var(--ink);
   text-underline-offset: .12em;
   text-decoration-thickness: 2px;
@@ -564,12 +569,20 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
 
 /* ---------- footer ---------- */
 .footer {
-  text-align: center;
-  padding: 48px 16px 40px;
+  padding: 36px 16px;
   border-top: 3px solid var(--ink);
   font-size: 13px;
   color: var(--ink-soft);
 }
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+.footer-inner .linkedin { justify-self: start; }
 .linkedin {
   display: inline-grid;
   place-items: center;
@@ -583,7 +596,7 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   transition: transform .12s;
 }
 .linkedin:hover { transform: rotate(2deg) translate(-1px, -1px); }
-.footer-made { font-family: var(--marker); font-size: 20px; color: var(--ink); margin-top: 22px; transform: rotate(-1deg); display: inline-block; }
+.footer-made { font-family: var(--marker); font-size: 20px; color: var(--ink); transform: rotate(-1deg); display: inline-block; text-align: center; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 760px) {

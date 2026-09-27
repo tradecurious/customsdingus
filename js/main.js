@@ -219,10 +219,82 @@
       lines.push(ln);
     }
 
-    var size = 400, R = 170, cx = 200, cy = 200;
+    var size = 400, R0 = 150, cx = 200, cy = 200;
     var yawAuto = 0, yawOff = 0, pitch = 0.25;
     var targetYawOff = 0, targetPitch = 0.25;
-    var visible = true, last = null;
+    var visible = true, last = null, elapsed = 0;
+
+    // --- the wobble: an underdamped spring chasing random targets, plus twitches
+    var wob = { x: 0, y: 0, s: 1, vx: 0, vy: 0, vs: 0, tx: 0, ty: 0, ts: 1, next: 0 };
+    var spin = { rate: 0.25, target: 0.25, next: 0 };
+    var pitchNoise = 0, pitchNoiseTarget = 0, pitchNext = 0;
+
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+
+    function wobble(dt) {
+      elapsed += dt;
+      if (elapsed > wob.next) {                     // pick somewhere new to lurch towards
+        wob.tx = rnd(-0.09, 0.09); wob.ty = rnd(-0.09, 0.09); wob.ts = rnd(0.86, 1.14);
+        wob.next = elapsed + rnd(0.35, 1.5);
+        if (Math.random() < 0.35) { wob.vx += rnd(-0.6, 0.6); wob.vy += rnd(-0.6, 0.6); wob.vs += rnd(-0.8, 0.8); } // twitch
+      }
+      var k = 34, c = 3.2;                          // stiff-ish, lightly damped: overshoots and jiggles
+      wob.vx += ((wob.tx - wob.x) * k - wob.vx * c) * dt;
+      wob.vy += ((wob.ty - wob.y) * k - wob.vy * c) * dt;
+      wob.vs += ((wob.ts - wob.s) * k - wob.vs * c) * dt;
+      wob.x += wob.vx * dt; wob.y += wob.vy * dt; wob.s += wob.vs * dt;
+      // a constant nervous tremor on top
+      wob.x += Math.sin(elapsed * 23.1) * 0.0012 + Math.sin(elapsed * 7.7) * 0.002;
+      wob.y += Math.cos(elapsed * 19.3) * 0.0012 + Math.sin(elapsed * 5.1) * 0.002;
+      if (wob.s < 0.8) wob.s = 0.8; if (wob.s > 1.2) wob.s = 1.2;
+
+      if (elapsed > spin.next) {                    // the spin speeds up, slows down, sometimes reverses
+        spin.target = Math.random() < 0.25 ? rnd(-0.6, -0.1) : rnd(0.1, 0.9);
+        spin.next = elapsed + rnd(0.8, 3);
+      }
+      spin.rate += (spin.target - spin.rate) * Math.min(1, dt * 2.5);
+      yawAuto += spin.rate * dt;
+
+      if (elapsed > pitchNext) { pitchNoiseTarget = rnd(-0.35, 0.35); pitchNext = elapsed + rnd(0.6, 2.2); }
+      pitchNoise += (pitchNoiseTarget - pitchNoise) * Math.min(1, dt * 3);
+    }
+
+    // --- the flies: jittery little paths in and out around the ball (local units of R)
+    var FLIES = 16, TRAIL = 22, flies = [];
+    for (var f = 0; f < FLIES; f++) {
+      var dir = [rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)];
+      var len = Math.sqrt(dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2]) || 1;
+      var rad = rnd(1.15, 1.45);
+      var fx = dir[0] / len * rad, fy = dir[1] / len * rad, fz = dir[2] / len * rad;
+      var trail = [];
+      for (var q = 0; q < TRAIL; q++) trail.push(fx, fy, fz);
+      flies.push({ x: fx, y: fy, z: fz, vx: 0, vy: 0, vz: 0, trail: trail, dart: rnd(0, 1) });
+    }
+
+    function buzz(dt) {
+      for (var i = 0; i < flies.length; i++) {
+        var fl = flies[i];
+        var J = 55;                                   // jitter
+        var ax = rnd(-J, J), ay = rnd(-J, J), az = rnd(-J, J);
+        var r = Math.sqrt(fl.x * fl.x + fl.y * fl.y + fl.z * fl.z) || 1e-6;
+        var pull = (r - 1.28) * 28;                   // hover about the ball
+        ax -= pull * fl.x / r; ay -= pull * fl.y / r; az -= pull * fl.z / r;
+        if (r < 1.04) { var sh = 90 * (1.04 - r) / r; ax += sh * fl.x; ay += sh * fl.y; az += sh * fl.z; } // don't fly into it
+        fl.dart -= dt;
+        if (fl.dart < 0) {                            // sudden dart somewhere
+          fl.vx += rnd(-3.5, 3.5); fl.vy += rnd(-3.5, 3.5); fl.vz += rnd(-3.5, 3.5);
+          fl.dart = rnd(0.25, 1.1);
+        }
+        fl.vx = (fl.vx + ax * dt) * (1 - 2.6 * dt);
+        fl.vy = (fl.vy + ay * dt) * (1 - 2.6 * dt);
+        fl.vz = (fl.vz + az * dt) * (1 - 2.6 * dt);
+        var sp = Math.sqrt(fl.vx * fl.vx + fl.vy * fl.vy + fl.vz * fl.vz);
+        if (sp > 4.5) { fl.vx *= 4.5 / sp; fl.vy *= 4.5 / sp; fl.vz *= 4.5 / sp; }
+        fl.x += fl.vx * dt; fl.y += fl.vy * dt; fl.z += fl.vz * dt;
+        fl.trail.push(fl.x, fl.y, fl.z);
+        if (fl.trail.length > TRAIL * 3) fl.trail.splice(0, 3);
+      }
+    }
 
     function fitGlobe() {
       var dpr = window.devicePixelRatio || 1;
@@ -231,7 +303,7 @@
       globe.width = Math.round(size * dpr);
       globe.height = Math.round(size * dpr);
       gctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      cx = size / 2; cy = size / 2; R = size * 0.46;
+      cx = size / 2; cy = size / 2; R0 = size * 0.33;
     }
 
     // rotate a unit vector by yaw (about y) then pitch (about x); returns [x, y, z]
@@ -248,19 +320,27 @@
     var tmp = [0, 0, 0], tmp2 = [0, 0, 0];
     var buckets = [[], [], [], [], [], []];
 
+    // a fly segment is hidden when it's behind the ball and inside its outline
+    function hidden(x, y, z) { return z < 0 && (x * x + y * y) < 1; }
+
     function drawGlobe() {
       var yaw = yawAuto + yawOff;
       cyaw = Math.cos(yaw); syaw = Math.sin(yaw);
-      cpit = Math.cos(pitch); spit = Math.sin(pitch);
+      var pt = pitch + pitchNoise;
+      cpit = Math.cos(pt); spit = Math.sin(pt);
+      var gx = cx + wob.x * size, gy = cy + wob.y * size, R = R0 * wob.s;
 
       gctx.clearRect(0, 0, size, size);
 
+      // flies behind the ball first
+      drawFlies(gx, gy, R, true);
+
       // the ball
-      var grad = gctx.createRadialGradient(cx - R * 0.4, cy - R * 0.4, R * 0.1, cx, cy, R * 1.05);
+      var grad = gctx.createRadialGradient(gx - R * 0.4, gy - R * 0.4, R * 0.1, gx, gy, R * 1.05);
       grad.addColorStop(0, '#ffffff');
       grad.addColorStop(1, '#e4ddcd');
       gctx.fillStyle = grad;
-      gctx.beginPath(); gctx.arc(cx, cy, R, 0, Math.PI * 2); gctx.fill();
+      gctx.beginPath(); gctx.arc(gx, gy, R, 0, Math.PI * 2); gctx.fill();
 
       // graticule (front half only)
       gctx.lineWidth = 1;
@@ -272,7 +352,7 @@
         for (var i = 0; i < line.length; i += 3) {
           rot(line[i], line[i + 1], line[i + 2], tmp);
           if (tmp[2] > 0.02) {
-            var sx = cx + tmp[0] * R, sy = cy - tmp[1] * R;
+            var sx = gx + tmp[0] * R, sy = gy - tmp[1] * R;
             if (pen) gctx.lineTo(sx, sy); else gctx.moveTo(sx, sy);
             pen = true;
           } else {
@@ -288,7 +368,7 @@
         rot(dots[j], dots[j + 1], dots[j + 2], tmp2);
         if (tmp2[2] <= 0) continue;
         var bi = Math.min(buckets.length - 1, Math.floor(tmp2[2] * buckets.length));
-        buckets[bi].push(cx + tmp2[0] * R, cy - tmp2[1] * R);
+        buckets[bi].push(gx + tmp2[0] * R, gy - tmp2[1] * R);
       }
       var base = R / 95;
       for (b = 0; b < buckets.length; b++) {
@@ -308,21 +388,52 @@
       // outline
       gctx.lineWidth = 3;
       gctx.strokeStyle = '#141414';
-      gctx.beginPath(); gctx.arc(cx, cy, R, 0, Math.PI * 2); gctx.stroke();
+      gctx.beginPath(); gctx.arc(gx, gy, R, 0, Math.PI * 2); gctx.stroke();
+
+      // flies in front
+      drawFlies(gx, gy, R, false);
+    }
+
+    function drawFlies(gx, gy, R, behind) {
+      gctx.lineCap = 'round';
+      for (var i = 0; i < flies.length; i++) {
+        var tr = flies[i].trail, n = tr.length / 3;
+        for (var s = 1; s < n; s++) {
+          var x0 = tr[(s - 1) * 3], y0 = tr[(s - 1) * 3 + 1], z0 = tr[(s - 1) * 3 + 2];
+          var x1 = tr[s * 3], y1 = tr[s * 3 + 1], z1 = tr[s * 3 + 2];
+          var back = hidden(x0, y0, z0) || hidden(x1, y1, z1);
+          var isBehind = (z0 + z1) < 0;
+          if (back) continue;                       // occluded by the ball
+          if (isBehind !== behind) continue;        // draw behind-ones before the ball, front-ones after
+          var a = (s / n);                          // fades along the trail
+          gctx.strokeStyle = 'rgba(20,20,20,' + (0.12 + 0.75 * a * a).toFixed(2) + ')';
+          gctx.lineWidth = 0.6 + 1.1 * a;
+          gctx.beginPath();
+          gctx.moveTo(gx + x0 * R, gy - y0 * R);
+          gctx.lineTo(gx + x1 * R, gy - y1 * R);
+          gctx.stroke();
+        }
+        // the fly itself
+        var fl = flies[i];
+        if (!hidden(fl.x, fl.y, fl.z) && ((fl.z < 0) === behind)) {
+          gctx.fillStyle = '#141414';
+          gctx.beginPath(); gctx.arc(gx + fl.x * R, gy - fl.y * R, 2.2, 0, Math.PI * 2); gctx.fill();
+        }
+      }
     }
 
     function frame(ts) {
       if (last === null) last = ts;
       var dt = Math.min(0.05, (ts - last) / 1000);
       last = ts;
-      if (!reduceMotion) yawAuto += dt * 0.25;
+      if (!reduceMotion) { wobble(dt); buzz(dt); }
       yawOff += (targetYawOff - yawOff) * 0.06;
       pitch += (targetPitch - pitch) * 0.06;
       if (visible) drawGlobe();
       requestAnimationFrame(frame);
     }
 
-    // it turns with the cursor
+    // it also turns with the cursor
     function aim(clientX, clientY) {
       var nx = clientX / window.innerWidth - 0.5;   // -0.5 .. 0.5
       var ny = clientY / window.innerHeight - 0.5;
