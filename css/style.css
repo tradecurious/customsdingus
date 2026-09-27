@@ -279,12 +279,8 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
 .stat-src { margin-top: 18px; font-size: 13px; color: var(--ink-soft); }
 .stat-src::before { content: "* "; }
 
-/* ---------- tagline ---------- */
-.sec--tagline { text-align: center; }
-.tagline { font-family: var(--serif); font-size: clamp(36px, 6.5vw, 84px); }
-
 /* ---------- logos ---------- */
-.sec--logos { max-width: none; padding-left: 0; padding-right: 0; }
+.sec--logos { max-width: none; padding: 0 0 clamp(40px, 6vw, 80px); }
 .logos-title { text-align: center; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 26px; }
 .marquee {
   overflow: hidden;
@@ -387,7 +383,6 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   display: block;
 }
 .accuracy-word { font-family: var(--serif); font-size: clamp(48px, 10vw, 140px); line-height: 1; margin-top: 14px; }
-.accuracy-sub { font-family: var(--marker); font-size: 26px; color: var(--blue); transform: rotate(-4deg); display: inline-block; }
 
 /* ---------- how ---------- */
 .steps {
@@ -502,6 +497,19 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   line-height: 1.1;
   letter-spacing: -.01em;
 }
+.stars {
+  font-size: clamp(30px, 4vw, 44px);
+  line-height: 1;
+  letter-spacing: .08em;
+  color: var(--orange);
+  margin-bottom: 18px;
+}
+.stars span { display: inline-block; }
+.stars span:nth-child(1) { transform: rotate(-8deg); }
+.stars span:nth-child(2) { transform: rotate(5deg) translateY(2px); }
+.stars span:nth-child(3) { transform: rotate(-3deg); }
+.stars span:nth-child(4) { transform: rotate(7deg) translateY(1px); }
+.stars span:nth-child(5) { transform: rotate(-6deg); }
 .pullquote-who {
   display: flex;
   align-items: center;
