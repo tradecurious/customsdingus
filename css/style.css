@@ -528,6 +528,49 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
 }
 .pullquote cite { font-style: normal; font-size: 14px; color: var(--ink-soft); }
 
+/* ---------- from the blog ---------- */
+.sec--blog { border-top: 3px solid var(--ink); }
+.post {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(220px, 360px) 1fr;
+  margin-top: 28px;
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transform: rotate(-.6deg);
+  box-shadow: 7px 7px 0 var(--orange);
+  transition: transform .15s, box-shadow .15s;
+}
+.post:hover { transform: rotate(.4deg) translate(-2px, -2px); box-shadow: 10px 10px 0 var(--orange); }
+.post::before {
+  content: "";
+  position: absolute;
+  top: -12px; right: 44px;
+  width: 110px; height: 30px;
+  background: var(--tape);
+  transform: rotate(4deg);
+  z-index: 1;
+}
+.post-thumb { position: relative; min-height: 220px; border-right: 3px solid var(--ink); background: var(--paper); }
+.post-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.post-body { display: flex; flex-direction: column; gap: 12px; padding: clamp(22px, 3vw, 36px); }
+.post-title { font-family: var(--serif); font-size: clamp(28px, 3.6vw, 44px); letter-spacing: -.01em; }
+.post-preview { font-size: 15px; color: var(--ink-soft); }
+.post-more {
+  margin-top: auto;
+  align-self: flex-start;
+  padding-top: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: underline wavy var(--pink);
+  text-underline-offset: 4px;
+}
+.post:hover .post-title { color: var(--pink); }
+
 /* ---------- about page ---------- */
 .page-about { min-height: 100vh; display: flex; flex-direction: column; }
 .page-about .masthead, .page-about .footer { width: 100%; flex: none; }
@@ -618,6 +661,8 @@ figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 10px; font-sty
   .credit-lhs { white-space: normal; }
   .globe-grid { grid-template-columns: 1fr; }
   .globe-title { text-align: center; }
+  .post { grid-template-columns: 1fr; }
+  .post-thumb { min-height: 0; aspect-ratio: 16 / 10; border-right: 0; border-bottom: 3px solid var(--ink); }
 }
 
 @media (prefers-reduced-motion: reduce) {
